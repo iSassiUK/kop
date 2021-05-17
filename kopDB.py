@@ -46,10 +46,26 @@ def createTestDB():
     %s,
     null);"""
 
-    db.execute(sqlCriminal,('Ed','Theodore','Gein','1906-08-27'))
-    db.execute(sqlCriminal,('John','Wayne','Gacy','1942-03-17'))
-    db.execute(sqlCriminal,('Theodore','Robert','Bundy','1946-11-24'))
-    db.execute(sqlCriminal,('Charles','Milles','Manson','1934-11-12'))
+    sqlMedia2Criminal="""
+    INSERT INTO `kop`.`media2criminal`
+(`criminal_id`,
+`media_id`)
+VALUES
+(%s,
+%s);
+"""
+
+    
+    #db.execute(sqlMedia2Criminal,(1,3))
+    #db.execute(sqlMedia2Criminal,(2,2))
+    #db.execute(sqlMedia2Criminal,(3,1))
+    #db.execute(sqlMedia2Criminal,(3,2))
+    #db.execute(sqlMedia2Criminal,(4,2))  
+
+    #db.execute(sqlCriminal,('Ed','Theodore','Gein','1906-08-27'))
+    #db.execute(sqlCriminal,('John','Wayne','Gacy','1942-03-17'))
+    #db.execute(sqlCriminal,('Theodore','Robert','Bundy','1946-11-24'))
+    #db.execute(sqlCriminal,('Charles','Milles','Manson','1934-11-12'))
 
 
     #db.execute(sqlMedia1)
