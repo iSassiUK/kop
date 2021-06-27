@@ -99,6 +99,6 @@ join kop.picture as pic on pic.id = media.picture_id""")
 
                 mediaList.append(oneMedia)
             db.close()
-            mediaListJSON = flask.jsonify(mediaList)
-
-            return mediaListJSON    
+            httpResponse = flask.jsonify(mediaList)
+            httpResponse.headers.add('Access-Control-Allow-Origin', '*')	
+            return httpResponse    
