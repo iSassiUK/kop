@@ -30,9 +30,9 @@ class App extends React.Component {
 	render(){
 		return (
 			<div className='App'>
-				<Navbar color="primary">
+				<Navbar color="dark">
 					<div className="container" id="brand">
-						<NavbarBrand>SLOGAN</NavbarBrand>
+						<NavbarBrand>KOP</NavbarBrand>
 						<SearchBar />
 					</div>
 				</Navbar>

@@ -14,7 +14,7 @@ class KopMedia extends React.Component {
 		return(
 		<div key={media.id} id="unit" className="col-12 mt-5">					
 			<Media tag="li">
-				{media.description}
+				<img src={media.picture.picture_url}></img>
 			</Media>
 		</div>
 		);
