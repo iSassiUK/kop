@@ -23,21 +23,19 @@ class KopCriminal:
             try:
                 db_connection = kopDB.getConnection()
 
-                db = db_connection.cursor(dictionary=True)
+                db = db_connection.cursor(dictionary=True, buffered=True)
                 # non puoi considerare dopo = una stringa per sicurezza (problema sql injection)
-                db.execute("""SELECT `criminal`.`id`,
-                `criminal`.`first_name`,
-                `criminal`.`middle_name`,
-                `criminal`.`last_name`,
-                `criminal`.`birth_date`,
-                `criminal`.`picture_id` FROM criminal WHERE lower(middle_name) like CONCAT('%',%s,'%')""", (sub_middle,))
+                db.execute("""select first_name, middle_name, last_name, birth_date,
+                 c.picture_id as pic_id, alias, c.id as criminal_id, nic.id as nickname_id, 
+                 pic.thumb, pic.url, pic.title, pic.description
+from criminal as c
+join nickname as nic on nic.criminal_id = c.id
+join picture as pic on pic.id = c.id WHERE lower(middle_name) like CONCAT('%',%s,'%')""", (sub_middle,))
             
                 allCriminal = db.fetchall()
                 if allCriminal == None:
                     return err.JsonErrorNotFound("criminal", "middle_name", str(""))
-
                 criminalList = kopDB.dbCriminalList(allCriminal)
-        
                 db.close()
                 criminalListJSON = flask.jsonify(criminalList)
                 return criminalListJSON
@@ -50,21 +48,20 @@ class KopCriminal:
             try:
                 db_connection = kopDB.getConnection()
 
-                db = db_connection.cursor(dictionary=True)
+                db = db_connection.cursor(dictionary=True, buffered=True)
                 # non puoi considerare dopo = una stringa per sicurezza (problema sql injection)
-                db.execute("""SELECT `criminal`.`id`,
-                `criminal`.`first_name`,
-                `criminal`.`middle_name`,
-                `criminal`.`last_name`,
-                `criminal`.`birth_date`,
-                `criminal`.`picture_id` FROM criminal WHERE lower(first_name) like CONCAT('%',%s,'%')""", (sub_first,))
+                db.execute(""" select first_name, middle_name, last_name, birth_date,
+                 c.picture_id as pic_id, alias, c.id as criminal_id, nic.id as nickname_id, 
+                 pic.thumb, pic.url, pic.title, pic.description
+from criminal as c
+join nickname as nic on nic.criminal_id = c.id
+join picture as pic on pic.id = c.id WHERE lower(first_name) like CONCAT('%',%s,'%')""", (sub_first,))
             
                 allCriminal = db.fetchall()
                 if allCriminal == None:
                     return err.JsonErrorNotFound("criminal", "first_name", str(""))
 
-                criminalList = kopDB.dbCriminalList(allCriminal)
-        
+                criminalList = kopDB.dbOneCriminal(allCriminal)
                 db.close()
                 criminalListJSON = flask.jsonify(criminalList)
                 return criminalListJSON
@@ -79,21 +76,20 @@ class KopCriminal:
             try:
                 db_connection = kopDB.getConnection()
 
-                db = db_connection.cursor(dictionary=True)
+                db = db_connection.cursor(dictionary=True, buffered=True)
                 # non puoi considerare dopo = una stringa per sicurezza (problema sql injection)
-                db.execute("""SELECT `criminal`.`id`,
-                `criminal`.`first_name`,
-                `criminal`.`middle_name`,
-                `criminal`.`last_name`,
-                `criminal`.`birth_date`,
-                `criminal`.`picture_id` FROM criminal WHERE lower(last_name) like CONCAT('%',%s,'%')""", (sub_last,))
+                db.execute(""" select first_name, middle_name, last_name, birth_date,
+                 c.picture_id as pic_id, alias, c.id as criminal_id, nic.id as nickname_id, 
+                 pic.thumb, pic.url, pic.title, pic.description
+from criminal as c
+join nickname as nic on nic.criminal_id = c.id
+join picture as pic on pic.id = c.id  WHERE last_name like CONCAT('%',%s,'%')""", (sub_last,))
             
                 allCriminal = db.fetchall()
                 if allCriminal == None:
                     return err.JsonErrorNotFound("criminal", "last_name", str(""))
-
-                criminalList = kopDB.dbCriminalList(allCriminal)
-        
+               
+                criminalList = kopDB.dbOneCriminal(allCriminal)
                 db.close()
                 criminalListJSON = flask.jsonify(criminalList)
                 return criminalListJSON
@@ -106,15 +102,15 @@ class KopCriminal:
             try:
                 db_connection = kopDB.getConnection()
 
-                db = db_connection.cursor(dictionary=True)
+                db = db_connection.cursor(dictionary=True, buffered=True)
                 # non puoi considerare dopo = una stringa per sicurezza (problema sql injection)
-                db.execute("""SELECT `criminal`.`id`,
-                `criminal`.`first_name`,
-                `criminal`.`middle_name`,
-                `criminal`.`last_name`,
-                `criminal`.`birth_date`,
-                `criminal`.`picture_id` FROM criminal WHERE id = %s""", (id,))
-                criminalOne = db.fetchone()
+                db.execute("""select first_name, middle_name, last_name, birth_date,
+                 c.picture_id as pic_id, alias, c.id as criminal_id, nic.id as nickname_id, 
+                 pic.thumb, pic.url, pic.title, pic.description
+from criminal as c
+join nickname as nic on nic.criminal_id = c.id
+join picture as pic on pic.id = c.id WHERE criminal_id = %s""", (id,))
+                criminalOne = db.fetchall()
                 if criminalOne == None:
                     return err.JsonErrorNotFound("criminal", "id", str(id))
                 oneCriminal = kopDB.dbOneCriminal(criminalOne)
@@ -127,14 +123,12 @@ class KopCriminal:
         @app.route('/kop/api/v1.0/criminal/all', methods=['GET'])
         def criminalRAll():
             db_connection = kopDB.getConnection()
-            db = db_connection.cursor(dictionary=True)
+            db = db_connection.cursor(dictionary=True, buffered=True)
 
-            db.execute("""SELECT `criminal`.`id`,
-            `criminal`.`first_name`,
-            `criminal`.`middle_name`,
-            `criminal`.`last_name`,
-            `criminal`.`birth_date`,
-            `criminal`.`picture_id` FROM criminal""")
+            db.execute("""select first_name, middle_name, last_name, birth_date, c.picture_id as pic_id, alias, c.id as criminal_id, nic.id as nickname_id, pic.thumb, pic.url, pic.title, pic.description
+from criminal as c
+join nickname as nic on nic.criminal_id = c.id
+join picture as pic on pic.id = c.id""")
 
             allCriminal = db.fetchall()
 

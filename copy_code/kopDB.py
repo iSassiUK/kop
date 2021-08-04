@@ -2,15 +2,32 @@ import mysql.connector
 from dns.rdatatype import NULL
 db_connection=NULL
 
-def dbOneCriminal(criminalOne):
+def dbOneCriminal(criminalOneMultiline):
     
+    cr_alias = [] 
+
+    for criminalOne in criminalOneMultiline:
+        alias={
+            "alias": criminalOne["alias"],
+            "nickname_id": criminalOne["nickname_id"]
+        }
+        cr_alias.append(alias)
+
+
     oneCriminalDict = {
-        "id": criminalOne["id"],
-        "first_name": criminalOne["first_name"],
-        "middle_name": criminalOne["middle_name"],
-        "last_name": criminalOne["last_name"],
+        "id": criminalOne["criminal_id"],
+        "first": criminalOne["first_name"],
+        "middle": criminalOne["middle_name"],
+        "last": criminalOne["last_name"],
         "birth_date": criminalOne["birth_date"],
-        "picture_id": criminalOne["picture_id"]
+        "picture": {
+            "pic_id" : criminalOne["pic_id"],
+            "thumb": criminalOne["thumb"],
+            "url": criminalOne["url"],
+            "title": criminalOne["title"],
+             "description": criminalOne["description"],
+        },
+        "aliases": cr_alias,
         }
             
     return oneCriminalDict
@@ -18,16 +35,40 @@ def dbOneCriminal(criminalOne):
 def dbCriminalList(allCriminal):
 
     criminalList = []
-
+    cr_alias=[]
+    current_value=""
     for criminalOne in allCriminal:
+        
+        alias={
+            "alias": criminalOne["alias"],
+            "nickname_id": criminalOne["nickname_id"]
+        }
+        #se id cambia, allora ri-inizia alias
+        if criminalOne["criminal_id"] != current_value:
+            cr_alias=[]
+            current_value = criminalOne["criminal_id"]
+        cr_alias.append(alias)
 
-        print(criminalOne["id"])
+        oneCriminalDict = {
+                "id": criminalOne["criminal_id"],
+                "first": criminalOne["first_name"],
+                "middle": criminalOne["middle_name"],
+                "last": criminalOne["last_name"],
+                "birth_date": criminalOne["birth_date"],
+                "picture": {
+                    "pic_id" : criminalOne["pic_id"],
+                    "thumb": criminalOne["thumb"],
+                    "url": criminalOne["url"],
+                    "title": criminalOne["title"],
+                    "description": criminalOne["description"],
+                },
+                "aliases": cr_alias,
+                }
 
-        oneCriminal = dbOneCriminal(criminalOne)
+        if oneCriminalDict not in criminalList:
+            criminalList.append(oneCriminalDict)   
 
-        criminalList.append(oneCriminal)
-
-    return criminalList
+    return criminalList    
 
 def getConnection():
     global db_connection
