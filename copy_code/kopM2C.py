@@ -10,8 +10,12 @@ class KopM2C:
             db_connection = kopDB.getConnection()
             db = db_connection.cursor(dictionary=True)
 
-            db.execute("""SELECT `media2criminal`.`criminal_id`,
-    `media2criminal`.`media_id` FROM media2criminal""")
+            db.execute("""SELECT m2c.criminal_id as cid, m2c.media_id as mid, c.first_name as 'first Name',last_name,m.title, CONVERT (c_pic.url using UTF8 ) as criminal_pic, CONVERT (m_pic.url using UTF8 ) as media_pic, CONVERT (m.description using UTF8) as media_description
+from 	(criminal as c 
+		join media2criminal as m2c on c.id = m2c.criminal_id)
+        join media as m on m.id = m2c.media_id
+		join picture as c_pic on c.picture_id = c_pic.id
+		join picture as m_pic on m.picture_id = m_pic.id""")
 
             allM2C = db.fetchall()
 
@@ -19,8 +23,15 @@ class KopM2C:
 
             for m2cOne in allM2C:
                 oneM2C = {
-                    "criminal_id": m2cOne["criminal_id"],
-                    "media_id": m2cOne["media_id"]
+                    "criminal_id": m2cOne["cid"],
+                    "media_id": m2cOne["mid"],
+                    "first": m2cOne["first Name"],
+                    "last": m2cOne["last_name"],
+                    "title": m2cOne["title"],
+                    "criminal_pic": m2cOne["criminal_pic"],
+                    "media_pic": m2cOne["media_pic"],
+                    "media_description": m2cOne["media_description"]
+
                 }
 
                 m2cList.append(m2cOne)
@@ -35,12 +46,22 @@ class KopM2C:
 
             db = db_connection.cursor(dictionary=True)
             #non puoi considerare dopo = una stringa per sicurezza (problema sql injection)
-            db.execute("""SELECT `media2criminal`.`criminal_id`,
-    `media2criminal`.`media_id` FROM media2criminal WHERE media_id = %s""",(media_id,))
+            db.execute("""SELECT m2c.criminal_id as cid, m2c.media_id as mid, c.first_name as 'first Name',last_name,m.title, CONVERT (c_pic.url using UTF8 ) as criminal_pic, CONVERT (m_pic.url using UTF8 ) as media_pic, CONVERT (m.description using UTF8) as media_description
+from 	(criminal as c 
+		join media2criminal as m2c on c.id = m2c.criminal_id)
+        join media as m on m.id = m2c.media_id
+		join picture as c_pic on c.picture_id = c_pic.id
+		join picture as m_pic on m.picture_id = m_pic.id WHERE media_id = %s""",(media_id,))
             m2cOne = db.fetchone()
             oneM2C= {
-                    "criminal_id" : m2cOne["criminal_id"],
-                    "media_id" : m2cOne["media_id"],
+                    "criminal_id": m2cOne["cid"],
+                    "media_id": m2cOne["mid"],
+                    "first": m2cOne["first Name"],
+                    "last": m2cOne["last_name"],
+                    "title": m2cOne["title"],
+                    "criminal_pic": m2cOne["criminal_pic"],
+                    "media_pic": m2cOne["media_pic"],
+                    "media_description": m2cOne["media_description"]
 
                     }
             db.close()
@@ -53,15 +74,23 @@ class KopM2C:
 
             db = db_connection.cursor(dictionary=True)
             #non puoi considerare dopo = una stringa per sicurezza (problema sql injection)
-            db.execute("""SELECT `media2criminal`.`criminal_id`,
-    `media2criminal`.`media_id` FROM media2criminal WHERE criminal_id = %s""",(criminal_id,))
+            db.execute("""SELECT m2c.criminal_id as cid, m2c.media_id as mid, c.first_name as 'first Name',last_name,m.title, CONVERT (c_pic.url using UTF8 ) as criminal_pic, CONVERT (m_pic.url using UTF8 ) as media_pic, CONVERT (m.description using UTF8) as media_description
+from 	(criminal as c 
+		join media2criminal as m2c on c.id = m2c.criminal_id)
+        join media as m on m.id = m2c.media_id
+		join picture as c_pic on c.picture_id = c_pic.id
+		join picture as m_pic on m.picture_id = m_pic.id WHERE criminal_id = %s""",(criminal_id,))
             m2cOne = db.fetchone()
             oneM2C= {
-                    "criminal_id" : m2cOne["criminal_id"],
-                    "media_id" : m2cOne["media_id"],
-
+                   "criminal_id": m2cOne["cid"],
+                    "media_id": m2cOne["mid"],
+                    "first": m2cOne["first Name"],
+                    "last": m2cOne["last_name"],
+                    "title": m2cOne["title"],
+                    "criminal_pic": m2cOne["criminal_pic"],
+                    "media_pic": m2cOne["media_pic"],
+                    "media_description": m2cOne["media_description"]
                     }
             db.close()
             oneM2CJSON=flask.jsonify(oneM2C)
-            return oneM2CJSON          
-            
+            return oneM2CJSON      
